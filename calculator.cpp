@@ -4,30 +4,6 @@
 
 HWND hEdit1, hEdit2;
 
-void PerformCalc(HWND hwnd, char op) {
-    char buf1[16], buf2[16];
-    GetWindowText(hEdit1, buf1, 16);
-    GetWindowText(hEdit2, buf2, 16);
-
-    double n1 = atof(buf1);
-    double n2 = atof(buf2);
-    double res = 0;
-
-    if (op == '+') res = n1 + n2;
-    else if (op == '-') res = n1 - n2;
-    else if (op == '*') res = n1 * n2;
-    else if (op == '/') {
-        if (n2 == 0) {
-            MessageBox(hwnd, "Cannot divide by zero!", "Error", MB_OK | MB_ICONERROR);
-            return;
-        }
-        res = n1 / n2;
-    }
-    char resultStr[64];
-    sprintf(resultStr, "%f", res);
-    MessageBox(hwnd, resultStr, "Result", MB_OK);
-}
-
 /* This is where all the input to the window goes to */
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
     switch (Message) {
@@ -52,12 +28,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
         CreateWindow("BUTTON", "/", WS_VISIBLE | WS_CHILD, 165, 130, 30, 30, hwnd, (HMENU)13, NULL, NULL);
         break;
     }
-    case WM_COMMAND:
-        if (LOWORD(wParam) >= 10 && LOWORD(wParam) <= 13) {
-            char ops[] = {'+', '-', '*', '/'};
-            PerformCalc(hwnd, ops[LOWORD(wParam) - 10]);
+    case WM_COMMAND: {
+        int wmId = LOWORD(wParam);
+        if (wmId >= 10 && wmId <= 13) {
+
+            char b1[32], b2[32];
+            GetWindowText(hEdit1, b1, 32);
+            GetWindowText(hEdit2, b2, 32);
+            double n1 = atof(b1), n2 = atof(b2), res = 0;
+
+            if (wmId == 10) res = n1 + n2;
+            else if (wmId == 11) res = n1 - n2;
+            else if (wmId == 12) res = n1 * n2;
+            else if (wmId == 13) res = (n2 != 0) ? n1 / n2 : 0;
+
+            char out[64];
+            sprintf(out, "%f", res); 
+
+            MessageBox(hwnd, s.c_str(), "Result", MB_OK);
         }
-        break;
+    break;
+    }   
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
