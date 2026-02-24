@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <string>
 #include <cstdio>
+using namespace std;
 
 HWND hEdit1, hEdit2;
 
@@ -45,6 +46,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
             char out[64];
             sprintf(out, "%f", res); 
 
+            string s = out;
             MessageBox(hwnd, s.c_str(), "Result", MB_OK);
         }
     break;
